@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::main})}">
+<head>
+    <title>Paciente</title>
+</head>
+<body>
+<main class="container my-4">
+
+    <h2 class="mb-4" th:text="${pacientes.id == null} ? 'Novo paciente' : 'Editar paciente'">Paciente</h2>
+
+    <form th:action="${pacientes.id == null} ? @{/pacientes/save} : @{/pacientes/update}"
+          th:object="${pacientes}" method="post" class="col-lg-6">
+
+        <input type="hidden" th:field="*{id}">
+
+        <div class="mb-3">
+            <label for="nome" class="form-label">Nome</label>
+            <input type="text" id="nome" class="form-control" th:field="*{nome}" placeholder="Nome">
+        </div>
+
+        <div class="mb-3">
+            <label for="telefone" class="form-label">Telefone</label>
+            <input type="text" id="telefone" class="form-control" th:field="*{telefone}" placeholder="Telefone">
+        </div>
+
+        <div th:replace="~{fragments/components :: form-actions(@{/pacientes/list})}"></div>
+    </form>
+
+</main>
+</body>
+</html>

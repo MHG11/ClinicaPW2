@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::main})}">
+<head>
+    <title>Pacientes</title>
+</head>
+<body>
+<main class="container my-4">
+
+    <div th:replace="~{fragments/components :: page-header('Pacientes', @{/pacientes/form}, 'Novo paciente')}"></div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle">
+            <thead class="table-light">
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Telefone</th>
+                <th class="text-end">Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="p : ${pacientes}">
+                <td th:text="${p.id}"></td>
+                <td th:text="${p.nome}"></td>
+                <td th:text="${p.telefone}"></td>
+                <td th:replace="~{fragments/components :: row-actions(@{/pacientes/edit/{id}(id=${p.id})}, @{/pacientes/remove/{id}(id=${p.id})})}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</main>
+</body>
+</html>

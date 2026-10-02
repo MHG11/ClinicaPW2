@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::main})}">
+<head>
+    <title>Consulta</title>
+</head>
+<body>
+<main class="container my-4">
+
+    <h2 class="mb-4" th:text="${consulta.id == null} ? 'Nova consulta' : 'Editar consulta'">Consulta</h2>
+
+    <form th:action="${consulta.id == null} ? @{/consultas/save} : @{/consultas/update}"
+          th:object="${consulta}" method="post" class="col-lg-8">
+
+        <input type="hidden" th:field="*{id}">
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label for="paciente" class="form-label">Paciente</label>
+                <select id="paciente" class="form-select" th:field="*{paciente.id}" required>
+                    <option value="">-- Selecione o paciente --</option>
+                    <option th:each="p : ${pacientes}" th:value="${p.id}" th:text="${p.nome}"></option>
+                </select>
+            </div>
+
+            <div class="col-md-6">
+                <label for="medico" class="form-label">Médico</label>
+                <select id="medico" class="form-select" th:field="*{medico.id}" required>
+                    <option value="">-- Selecione o médico --</option>
+                    <option th:each="m : ${medicos}" th:value="${m.id}" th:text="${m.nome}"></option>
+                </select>
+            </div>
+
+            <div class="col-md-6">
+                <label for="data" class="form-label">Data</label>
+                <input type="datetime-local" id="data" class="form-control" th:field="*{data}">
+            </div>
+
+            <div class="col-md-6">
+                <label for="valor" class="form-label">Valor</label>
+                <input type="text" id="valor" class="form-control" th:field="*{valor}" placeholder="Valor">
+            </div>
+
+            <div class="col-12">
+                <label for="observacao" class="form-label">Observação</label>
+                <input type="text" id="observacao" class="form-control" th:field="*{observacao}" placeholder="Observação">
+            </div>
+        </div>
+
+        <div th:replace="~{fragments/components :: form-actions(@{/consultas/list})}"></div>
+    </form>
+
+</main>
+</body>
+</html>

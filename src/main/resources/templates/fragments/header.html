@@ -1,0 +1,40 @@
+<header class="container" th:fragment="header">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success rounded-bottom px-3">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-semibold" th:href="@{/consultas/list}">Gestão de Consultas</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Alternar navegação">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Consultas</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" th:href="@{/consultas/list}">Listar consultas</a></li>
+                            <li><a class="dropdown-item" th:href="@{/consultas/form}">Nova consulta</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Pacientes</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" th:href="@{/pacientes/list}">Listar pacientes</a></li>
+                            <li><a class="dropdown-item" th:href="@{/pacientes/form}">Novo paciente</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Médicos</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" th:href="@{/medicos/list}">Listar médicos</a></li>
+                            <li><a class="dropdown-item" th:href="@{/medicos/form}">Novo médico</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <a class="btn btn-light" th:href="@{/consultas/form}">Nova consulta</a>
+            </div>
+        </div>
+    </nav>
+
+</header>

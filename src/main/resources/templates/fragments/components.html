@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<body>
+
+<!-- Título da página + botão de cadastro (páginas de lista) -->
+<div class="d-flex justify-content-between align-items-center mb-3" th:fragment="page-header(title, newUrl, newLabel)">
+    <h2 class="mb-0" th:text="${title}">Título</h2>
+    <a class="btn btn-success" th:href="${newUrl}" th:text="${newLabel}">Novo</a>
+</div>
+
+<!-- Coluna de ações (editar / excluir) das tabelas -->
+<td class="text-end text-nowrap" th:fragment="row-actions(editUrl, removeUrl)">
+    <a class="btn btn-sm btn-outline-primary" th:href="${editUrl}">Editar</a>
+    <a class="btn btn-sm btn-outline-danger" th:href="${removeUrl}"
+       onclick="return confirm('Tem certeza que deseja excluir este registro?')">Excluir</a>
+</td>
+
+<!--Botões dos formulários-->
+<div class="d-flex gap-2 mt-4" th:fragment="form-actions(cancelUrl)">
+    <button type="submit" class="btn btn-success">Salvar</button>
+    <a class="btn btn-outline-secondary" th:href="${cancelUrl}">Cancelar</a>
+</div>
+
+</body>
+</html>
