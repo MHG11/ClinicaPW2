@@ -30,54 +30,41 @@ public class ConsultaController {
     @Autowired
     MedicoRepository medicoRepository;
 
-    public ConsultaController(){
-        repository = new ConsultaRepository();
-        pacienteRepository = new PacienteRepository();
-        medicoRepository = new MedicoRepository();
-    }
-
     @GetMapping("/form")
     public ModelAndView form(ModelMap model) {
         // 1. Envia a consulta vazia para o th:object="${consulta}" não quebrar
         model.addAttribute("consulta", new Consulta());
 
         // 2. Busca as listas no banco de dados para preencher os <select>
-        model.addAttribute("medicos", medicoRepository.medicos());
-        model.addAttribute("pacientes", pacienteRepository.pacientes());
+        model.addAttribute("medicos", medicoRepository.findAll());
+        model.addAttribute("pacientes", pacienteRepository.findAll());
 
         return new ModelAndView("consultas/form", model);
     }
 
     @GetMapping("/list")
     public ModelAndView consultas(ModelMap model){
-        model.addAttribute("consulta", repository.consultas());
+        model.addAttribute("consulta", repository.findAll());
         return new ModelAndView("consultas/list", model);
     }
 
     @PostMapping("/save")
     public ModelAndView salvar(Consulta consulta){
         repository.save(consulta);
-        return new ModelAndView("consultas/list");
+        return new ModelAndView("redirect:/consultas/list");
     }
 
     @GetMapping("/edit/{id}")
     public ModelAndView edit(@PathVariable("id") Long id,ModelMap model){
-        model.addAttribute("consulta", repository.consulta(id));
-        model.addAttribute("medicos", medicoRepository.medicos());
-        model.addAttribute("pacientes", pacienteRepository.pacientes());
+        model.addAttribute("consulta", repository.findById(id));
+        model.addAttribute("medicos", medicoRepository.findById(id));
+        model.addAttribute("pacientes", pacienteRepository.findById(id));
         return new ModelAndView("consultas/form",model);
     }
 
     @GetMapping("/remove/{id}")
     public ModelAndView deletar(@PathVariable("id") Long id){
-        repository.remove(id);
+        repository.deleteById(id);
         return new ModelAndView("redirect:/consultas/list");
     }
-
-    @PostMapping("/update")
-    public ModelAndView update(Consulta consulta){
-        repository.update(consulta);
-        return new ModelAndView("redirect:/consultas/list");
-    }
-
 }

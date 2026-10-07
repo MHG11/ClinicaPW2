@@ -19,10 +19,6 @@ public class PacienteController {
     @Autowired
     PacienteRepository repository;
 
-    public PacienteController(){
-        repository = new PacienteRepository();
-    }
-
     @GetMapping("/form")
     public String form(@ModelAttribute("pacientes") Paciente pacientes){
         return "pacientes/form";
@@ -30,7 +26,7 @@ public class PacienteController {
 
     @GetMapping("/list")
     public ModelAndView pacientes(ModelMap model){
-        model.addAttribute("pacientes", repository.pacientes());
+        model.addAttribute("pacientes", repository.findAll());
         return new ModelAndView("pacientes/list", model);
     }
 
@@ -42,21 +38,14 @@ public class PacienteController {
 
     @GetMapping("/edit/{id}")
     public ModelAndView edit(@PathVariable("id") Long id, ModelMap model){
-        model.addAttribute("pacientes", repository.paciente(id));
+        model.addAttribute("pacientes", repository.findById(id));
         return new ModelAndView("pacientes/form",model);
     }
 
     @GetMapping("/remove/{id}")
     public ModelAndView deletar(@PathVariable("id") Long id){
-        repository.remove(id);
+        repository.deleteById(id);
         return new ModelAndView("redirect:/pacientes/list");
     }
-
-    @PostMapping("/update")
-    public ModelAndView update(Paciente paciente){
-        repository.update(paciente);
-        return new ModelAndView("redirect:/pacientes/list");
-    }
-
 
 }

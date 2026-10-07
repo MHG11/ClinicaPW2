@@ -9,7 +9,7 @@
 
     <h2 class="mb-4" th:text="${pacientes.id == null} ? 'Novo paciente' : 'Editar paciente'">Paciente</h2>
 
-    <form th:action="${pacientes.id == null} ? @{/pacientes/save} : @{/pacientes/update}"
+    <form th:action="@{/pacientes/save}"
           th:object="${pacientes}" method="post" class="col-lg-6">
 
         <input type="hidden" th:field="*{id}">
