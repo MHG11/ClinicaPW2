@@ -9,7 +9,7 @@
 
     <h2 class="mb-4" th:text="${consulta.id == null} ? 'Nova consulta' : 'Editar consulta'">Consulta</h2>
 
-    <form th:action="${consulta.id == null} ? @{/consultas/save} : @{/consultas/update}"
+    <form th:action="@{/consultas/save}"
           th:object="${consulta}" method="post" class="col-lg-8">
 
         <input type="hidden" th:field="*{id}">
