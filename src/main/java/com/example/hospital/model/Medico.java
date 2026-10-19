@@ -1,6 +1,7 @@
 package com.example.hospital.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 import java.io.Serializable;
 import java.util.List;
@@ -12,6 +13,7 @@ public class Medico implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_medico;
+    @NotBlank(message = "Adicione um nome.")
     private String nome;
     private String crm;
 
