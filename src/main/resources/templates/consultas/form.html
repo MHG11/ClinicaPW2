@@ -47,6 +47,12 @@
             </div>
         </div>
 
+        <ul th:if="${#fields.hasAnyErrors()}">
+            <li th:each="erro : ${#fields.detailedErrors()}">
+                <span th:text="${erro.message}"></span>
+            </li>
+        </ul>
+
         <div th:replace="~{fragments/components :: form-actions(@{/consultas/list})}"></div>
     </form>
 
