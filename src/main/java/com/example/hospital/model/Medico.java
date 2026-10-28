@@ -1,40 +1,19 @@
 package com.example.hospital.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 
 import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name = "medico")
-public class Medico implements Serializable {
+@PrimaryKeyJoinColumn(name = "id_pessoa")
+public class Medico extends PessoaFisica implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_medico;
-    @NotBlank(message = "Adicione um nome.")
-    private String nome;
     private String crm;
 
     @OneToMany(mappedBy = "medico")
     private List<Consulta> consultas;
-
-    public Long getId() {
-        return id_medico;
-    }
-
-    public void setId(Long id_medico) {
-        this.id_medico = id_medico;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
 
     public String getCrm() {
         return crm;
