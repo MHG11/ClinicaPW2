@@ -8,11 +8,14 @@ import com.example.hospital.repository.ConsultaRepository;
 import com.example.hospital.repository.MedicoRepository;
 import com.example.hospital.repository.PacienteRepository;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -49,8 +52,14 @@ public class ConsultaController {
     }
 
     @PostMapping("/save")
-    public ModelAndView salvar(Consulta consulta){
+    public ModelAndView salvar(@Valid @ModelAttribute("consulta") Consulta consulta,
+                               BindingResult result, RedirectAttributes attributes){
+        if (result.hasErrors()) {
+            return new ModelAndView("consultas/form");
+        }
+
         repository.save(consulta);
+        attributes.addFlashAttribute("mensagem", "Consulta cadastrada com sucesso.");
         return new ModelAndView("redirect:/consultas/list");
     }
 
