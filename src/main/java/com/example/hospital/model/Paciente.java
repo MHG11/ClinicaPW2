@@ -10,6 +10,7 @@ import java.util.List;
 @PrimaryKeyJoinColumn(name = "id_pessoa")
 public class Paciente extends PessoaFisica implements Serializable {
 
+    @NotBlank(message = "Adicione um numero.")
     private String telefone;
 
     @OneToMany(mappedBy = "paciente")
