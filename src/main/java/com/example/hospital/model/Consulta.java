@@ -3,9 +3,6 @@ package com.example.hospital.model;
 import java.io.Serializable;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 import javax.xml.crypto.Data;
 import java.time.LocalDateTime;
@@ -17,11 +14,8 @@ public class Consulta implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @FutureOrPresent
     private LocalDateTime data;
-    @NotNull(message = "Adicione um valor.")
     private Double valor;
-    @NotBlank(message = "Adicione uma observação.")
     private String observacao;
 
     @ManyToOne
