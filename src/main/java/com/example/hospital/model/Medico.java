@@ -1,6 +1,7 @@
 package com.example.hospital.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 import java.io.Serializable;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 @PrimaryKeyJoinColumn(name = "id_pessoa")
 public class Medico extends PessoaFisica implements Serializable {
 
+    @NotBlank(message = "Adicione um CRM.")
     private String crm;
 
     @OneToMany(mappedBy = "medico")
