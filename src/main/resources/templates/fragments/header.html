@@ -1,4 +1,4 @@
-<header class="container" th:fragment="header">
+<header class="container" th:fragment="header" xmlns:sec="http://www.w3.org/1999/xhtml">
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-success rounded-bottom px-3">
         <div class="container-fluid">
@@ -7,6 +7,10 @@
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Alternar navegação">
                 <span class="navbar-toggler-icon"></span>
             </button>
+
+            <span sec:authorize="isAuthenticated()">
+                Olá, <strong sec:authentication="name">usuário</strong>
+            </span>
 
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
@@ -34,6 +38,16 @@
                 </ul>
             </div>
         </div>
+
+        <a th:href="@{/m/form}">Cadastrar pessoa</a>
+
+        <a sec:authorize="hasRole('ADMIN')" th:href="@{/pessoa/list}">Listar pessoas</a>
+
+        <a sec:authorize="!isAuthenticated()" th:href="@{/login}">Entrar</a>
+
+        <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post">
+            <button type="submit">Sair</button>
+        </form>
     </nav>
 
 </header>
