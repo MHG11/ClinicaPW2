@@ -7,10 +7,10 @@
 <body>
 <main class="container my-4">
 
-    <h2 class="mb-4" th:text="${medico.id == null} ? 'Novo médico' : 'Editar médico'">Médico</h2>
+    <h2 class="mb-4" th:text="${medicos.id == null} ? 'Novo médico' : 'Editar médico'">Médico</h2>
 
     <form th:action="@{/medicos/save}"
-          th:object="${medico}" method="post" class="col-lg-6">
+          th:object="${medicos}" method="post" class="col-lg-6">
 
         <input type="hidden" th:field="*{id}">
 
