@@ -20,7 +20,7 @@ public class SecurityConfiguration {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
-                        .requestMatchers("/login/**´").permitAll()
+                        .requestMatchers("/login/**").permitAll()
                         .requestMatchers("/consultas/form", "/consultas/save").hasAnyRole("ADMIN", "SECRETARIA")
                         .requestMatchers("/pacientes/**").hasAnyRole("ADMIN", "SECRETARIA")
                         .requestMatchers("/consultas/list").hasAnyRole("ADMIN", "SECRETARIA", "PACIENTE")

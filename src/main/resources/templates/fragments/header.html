@@ -18,30 +18,28 @@
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Consultas</a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" th:href="@{/consultas/list}">Listar consultas</a></li>
-                            <li><a class="dropdown-item" th:href="@{/consultas/form}">Nova consulta</a></li>
+                            <li><a class="dropdown-item" th:href="@{/consultas/form}" sec:authorize="hasAnyRole('ADMIN','SECRETARIA')">Nova consulta</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown" sec:authorize="hasAnyRole('ADMIN','SECRETARIA')">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Pacientes</a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" th:href="@{/pacientes/list}">Listar pacientes</a></li>
                             <li><a class="dropdown-item" th:href="@{/pacientes/form}">Novo paciente</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown" sec:authorize="hasAnyRole('ADMIN','SECRETARIA')">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Médicos</a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" th:href="@{/medicos/list}">Listar médicos</a></li>
-                            <li><a class="dropdown-item" th:href="@{/medicos/form}">Novo médico</a></li>
+                            <li><a class="dropdown-item" th:href="@{/medicos/form}" >Novo médico</a></li>
                         </ul>
                     </li>
                 </ul>
             </div>
         </div>
 
-        <a th:href="@{/m/form}">Cadastrar pessoa</a>
-
-        <a sec:authorize="hasRole('ADMIN')" th:href="@{/usuario/dados}">Listar usuarios</a>
+        <a sec:authorize="hasRole('ADMIN')" th:href="@{/usuario/lista}">Listar usuarios</a>
 
         <a sec:authorize="!isAuthenticated()" th:href="@{/login}">Entrar</a>
 

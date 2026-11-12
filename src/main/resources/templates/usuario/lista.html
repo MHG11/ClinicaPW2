@@ -10,6 +10,7 @@
     <h4 class="mb-3">Usuários</h4>
 
     <div class="card shadow-sm">
+        <a th:href="@{/usuario/perfis}" class="btn btn-outline-secondary btn-sm">Gerenciar perfis</a>
         <table class="table table-hover mb-0">
             <thead class="table-light">
             <tr>
@@ -20,7 +21,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="u : ${usuario}">
+            <tr th:each="u : ${usuarios}">
                 <td th:text="${u.id}"></td>
                 <td th:text="${u.login}"></td>
                 <td>

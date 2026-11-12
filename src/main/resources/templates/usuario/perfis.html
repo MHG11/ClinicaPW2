@@ -21,7 +21,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="u : ${usuario}">
+            <tr th:each="u : ${usuarios}">
                 <td th:text="${u.login}"></td>
                 <td>
                     <span th:each="p : ${u.perfis}" th:text="${p.nome}"
