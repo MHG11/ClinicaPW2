@@ -20,9 +20,13 @@ public class SecurityConfiguration {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
-                        .requestMatchers("/pessoa/form").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/pessoa/save").permitAll()
-                        .requestMatchers("/pessoa/list").hasRole("ADMIN")
+                        .requestMatchers("/login/**").permitAll()
+                        .requestMatchers("/consultas/form", "/consultas/save").hasAnyRole("ADMIN", "SECRETARIA")
+                        .requestMatchers("/pacientes/**").hasAnyRole("ADMIN", "SECRETARIA")
+                        .requestMatchers("/consultas/list").hasAnyRole("ADMIN", "SECRETARIA", "PACIENTE")
+                        .requestMatchers(HttpMethod.POST, "/usuario/cadastro").permitAll()
+                        .requestMatchers("/usuario/dados").hasRole("ADMIN")
+                        .requestMatchers("/usuario/perfis", "/usuario/*/perfil").hasRole("ADMIN")
                         .anyRequest().authenticated() // demais requisições exigem usuário autenticado
                 )
                 .formLogin(form -> form
