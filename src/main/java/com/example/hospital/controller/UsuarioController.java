@@ -1,6 +1,7 @@
 package com.example.hospital.controller;
 
 import com.example.hospital.model.Perfil;
+import com.example.hospital.model.PessoaFisica;
 import com.example.hospital.model.Usuario;
 import com.example.hospital.repository.PerfilRepository;
 import com.example.hospital.repository.UsuarioRepository;
@@ -66,17 +67,23 @@ public class UsuarioController {
     }
 
     @PostMapping("/cadastro")
-    public String cadastro(@RequestParam String login, @RequestParam String senha, Model model){
+    public String cadastro(@RequestParam String cpf, @RequestParam String login, @RequestParam String senha, Model model){
 
         if (repository.existsByLogin(login)) {
             model.addAttribute("erro", "Usuário já existe.");
             return "login/cadastro";
         }
 
+        PessoaFisica p = new PessoaFisica();
+        p.setNome(login);
+        p.setCpf(cpf);
+
         Usuario u = new Usuario();
         u.setLogin(login);
         u.setPassword(passwordEncoder.encode(senha));
         u.setAtivo(true);
+        u.setPessoa(p);
+
         repository.save(u);
         return"redirect:/login";
 

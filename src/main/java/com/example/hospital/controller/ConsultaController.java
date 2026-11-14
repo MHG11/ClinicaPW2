@@ -1,15 +1,16 @@
 package com.example.hospital.controller;
 
 import ch.qos.logback.core.model.Model;
-import com.example.hospital.model.Consulta;
-import com.example.hospital.model.Medico;
-import com.example.hospital.model.Paciente;
+import com.example.hospital.model.*;
 import com.example.hospital.repository.ConsultaRepository;
 import com.example.hospital.repository.MedicoRepository;
 import com.example.hospital.repository.PacienteRepository;
+import com.example.hospital.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -33,6 +34,9 @@ public class ConsultaController {
     @Autowired
     MedicoRepository medicoRepository;
 
+    @Autowired
+    UsuarioRepository usuarioRepository;
+
     @GetMapping("/form")
     public ModelAndView form(ModelMap model) {
         // 1. Envia a consulta vazia para o th:object="${consulta}" não quebrar
@@ -46,8 +50,21 @@ public class ConsultaController {
     }
 
     @GetMapping("/list")
-    public ModelAndView consultas(ModelMap model){
-        model.addAttribute("consulta", repository.findAll());
+    public ModelAndView consultas(@AuthenticationPrincipal UserDetails usuarioLogado, ModelMap model){
+        Usuario usuario = usuarioRepository.findByLogin(usuarioLogado.getUsername()).orElseThrow();
+
+        Pessoa pessoa = usuario.getPessoa();
+        List<Consulta> consultas;
+
+        if (pessoa instanceof Medico){
+            consultas = repository.findByMedicoId(pessoa.getId());
+        } else if (pessoa instanceof Paciente){
+            consultas = repository.findByPacienteId(pessoa.getId());
+        } else {
+            consultas = repository.findAll();
+        }
+
+        model.addAttribute("consulta", consultas);
         return new ModelAndView("consultas/list", model);
     }
 
@@ -61,6 +78,7 @@ public class ConsultaController {
         repository.save(consulta);
         attributes.addFlashAttribute("mensagem", "Consulta cadastrada com sucesso.");
         return new ModelAndView("redirect:/consultas/list");
+
     }
 
     @GetMapping("/edit/{id}")

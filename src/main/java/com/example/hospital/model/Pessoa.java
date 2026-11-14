@@ -9,9 +9,12 @@ public abstract class Pessoa {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "pessoa_id")
     private Long id;
     @NotBlank(message = "Adicione um nome.")
     private String nome;
+
+
 
     public Long getId() {
         return id;
