@@ -21,9 +21,9 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
                         .requestMatchers("/login/**").permitAll()
-                        .requestMatchers("/consultas/form", "/consultas/save").hasAnyRole("ADMIN", "SECRETARIA")
-                        .requestMatchers("/pacientes/**").hasAnyRole("ADMIN", "SECRETARIA")
-                        .requestMatchers("/consultas/list").hasAnyRole("ADMIN", "SECRETARIA", "PACIENTE")
+                        .requestMatchers("/consultas/form", "/consultas/save").hasAnyRole("ADMIN", "SECRETARIA","MEDICO")
+                        .requestMatchers("/pacientes/**").hasAnyRole("ADMIN", "SECRETARIA","MEDICO")
+                        .requestMatchers("/consultas/list").hasAnyRole("ADMIN", "SECRETARIA", "PACIENTE","MEDICO")
                         .requestMatchers(HttpMethod.POST, "/usuario/cadastro").permitAll()
                         .requestMatchers("/usuario/dados").hasRole("ADMIN")
                         .requestMatchers("/usuario/perfis", "/usuario/*/perfil").hasRole("ADMIN")

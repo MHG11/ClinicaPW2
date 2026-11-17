@@ -24,6 +24,11 @@
             <input type="text" id="telefone" class="form-control" th:field="*{telefone}" th:errorclass="is-invalid" placeholder="Telefone">
         </div>
 
+        <div class="mb-3">
+            <label for="CPF" class="form-label">CPF</label>
+            <input type="text" id="cpf" class="form-control" th:field="*{cpf}" th:errorclass="is-invalid" placeholder="CPF">
+        </div>
+
         <ul th:if="${#fields.hasAnyErrors()}">
             <li th:each="erro : ${#fields.detailedErrors()}">
                 <span th:text="${erro.message}"></span>
