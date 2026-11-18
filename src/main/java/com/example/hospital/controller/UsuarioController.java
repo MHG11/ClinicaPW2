@@ -57,6 +57,7 @@ public class UsuarioController {
         return "usuario/lista";
     }
 
+
     @GetMapping("/dados")
     public String dados(@AuthenticationPrincipal UserDetails usuarioLogado, Model model) {
         Usuario usuario = repository.findByLogin(usuarioLogado.getUsername())
