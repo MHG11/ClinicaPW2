@@ -18,12 +18,16 @@ public class Consulta implements Serializable{
     private Double valor;
     private String observacao;
 
-    @ManyToOne
-    @JoinColumn(name = "id_paciente")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "id_paciente", nullable = false)
     private Paciente paciente;
-    @ManyToOne
-    @JoinColumn(name = "id_medico")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "id_medico", nullable = false)
     private Medico medico;
+
+    @OneToOne(optional = false)
+    @JoinColumn(name = "agendamento_id", nullable = false, unique = true)
+    private Agendamento agendamento;
 
     public Long getId() {
         return id;
@@ -71,5 +75,13 @@ public class Consulta implements Serializable{
 
     public void setMedico(Medico medico) {
         this.medico = medico;
+    }
+
+    public Agendamento getAgendamento() {
+        return agendamento;
+    }
+
+    public void setAgendamento(Agendamento agendamento) {
+        this.agendamento = agendamento;
     }
 }
