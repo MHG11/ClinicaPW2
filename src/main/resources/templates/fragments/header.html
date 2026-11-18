@@ -18,8 +18,12 @@
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Consultas</a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" th:href="@{/consultas/list}">Listar consultas</a></li>
-                            <li><a class="dropdown-item" th:href="@{/consultas/form}" sec:authorize="hasAnyRole('ADMIN','SECRETARIA')">Nova consulta</a></li>
+                            <li><a class="dropdown-item" th:href="@{/agendamentos/list}">Agendamentos</a></li>
+                            <li><a class="dropdown-item" th:href="@{/agenda/list}">Horários disponíveis</a></li>
                         </ul>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasAnyRole('ADMIN','SECRETARIA','MEDICO')">
+                        <a class="nav-link" th:href="@{/agenda/form}">Disponibilizar horário</a>
                     </li>
                     <li class="nav-item dropdown" sec:authorize="hasAnyRole('ADMIN','SECRETARIA')">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Pacientes</a>
