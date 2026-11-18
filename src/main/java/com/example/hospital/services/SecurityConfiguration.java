@@ -29,6 +29,8 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/agendamentos/cancelar/**").hasAnyRole("ADMIN", "SECRETARIA", "PACIENTE", "MEDICO")
                         .requestMatchers("/pacientes/**").hasAnyRole("ADMIN", "SECRETARIA","MEDICO")
                         .requestMatchers(HttpMethod.POST, "/consultas/*/observacao").hasRole("MEDICO")
+                        .requestMatchers("/consultas/form", "/consultas/save").hasAnyRole("ADMIN", "SECRETARIA","MEDICO")
+                        .requestMatchers("/pacientes/**").hasAnyRole("ADMIN", "SECRETARIA","MEDICO")
                         .requestMatchers("/consultas/list").hasAnyRole("ADMIN", "SECRETARIA", "PACIENTE","MEDICO")
                         .requestMatchers(HttpMethod.POST, "/usuario/cadastro").permitAll()
                         .requestMatchers("/usuario/dados").hasRole("ADMIN")

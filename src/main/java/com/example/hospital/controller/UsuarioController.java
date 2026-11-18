@@ -57,6 +57,28 @@ public class UsuarioController {
         return "usuario/lista";
     }
 
+    @PostMapping("/{id}/perfil")
+    public String associarPerfil(@PathVariable Long id,
+                                 @RequestParam Long perfilId,
+                                 RedirectAttributes redirect) {
+        Usuario u = repository.findById(id).orElseThrow();
+        Perfil p = perfilRepository.findById(perfilId).orElseThrow();
+
+        u.getPerfis().clear();
+        u.getPerfis().add(p);
+        repository.save(u);
+
+        redirect.addFlashAttribute("msg", "Perfil de " + u.getLogin() + " atualizado.");
+        return "redirect:/usuario/perfis";
+    }
+
+    @GetMapping("/lista")
+    public String listar(Model model) {
+        model.addAttribute("usuarios", repository.findAll());
+        return "usuario/lista";
+    }
+
+
     @GetMapping("/dados")
     public String dados(@AuthenticationPrincipal UserDetails usuarioLogado, Model model) {
         Usuario usuario = repository.findByLogin(usuarioLogado.getUsername())
