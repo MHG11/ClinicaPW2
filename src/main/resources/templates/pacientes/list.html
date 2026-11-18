@@ -18,12 +18,30 @@
                 <th>Telefone</th>
                 <th class="text-end">Ações</th>
             </tr>
+            <thead class="table-light">
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Telefone</th>
+                <th>Usuário</th>
+                <th class="text-end">Ações</th>
+            </tr>
             </thead>
             <tbody>
             <tr th:each="p : ${paciente}">
                 <td th:text="${p.id}"></td>
                 <td th:text="${p.nome}"></td>
                 <td th:text="${p.telefone}"></td>
+                <td>
+                    <form th:if="${!#lists.isEmpty(usuarios)}"
+                          th:action="@{/pacientes/vincular}" method="post" class="d-flex gap-1">
+                        <input type="hidden" name="pacienteId" th:value="${p.id}">
+                        <select name="usuarioId" class="form-select form-select-sm w-auto">
+                            <option th:each="u : ${usuarios}" th:value="${u.id}" th:text="${u.login}"></option>
+                        </select>
+                        <button class="btn btn-sm btn-outline-primary">Vincular</button>
+                    </form>
+                </td>
                 <td th:replace="~{fragments/components :: row-actions(@{/pacientes/edit/{id}(id=${p.id})}, @{/pacientes/remove/{id}(id=${p.id})})}"></td>
             </tr>
             </tbody>

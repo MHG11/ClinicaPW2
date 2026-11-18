@@ -13,6 +13,7 @@
         <div th:if="${erro}" class="alert alert-danger" th:text="${erro}"></div>
 
         <form th:action="@{/usuario/cadastro}" method="post">
+            
             <div class="mb-3">
                 <label for="login" class="form-label">Usuário</label>
                 <input type="text" id="login" name="login" class="form-control" required>

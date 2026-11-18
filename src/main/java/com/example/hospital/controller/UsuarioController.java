@@ -1,6 +1,8 @@
 package com.example.hospital.controller;
 
+import com.example.hospital.model.Paciente;
 import com.example.hospital.model.Perfil;
+import com.example.hospital.model.PessoaFisica;
 import com.example.hospital.model.Usuario;
 import com.example.hospital.repository.PerfilRepository;
 import com.example.hospital.repository.UsuarioRepository;
@@ -20,6 +22,12 @@ public class UsuarioController {
     private final PasswordEncoder passwordEncoder;
 
     private final PerfilRepository perfilRepository;
+
+    public UsuarioController(UsuarioRepository repository, PasswordEncoder passwordEncoder, PerfilRepository perfilRepository) {
+        this.repository = repository;
+        this.passwordEncoder = passwordEncoder;
+        this.perfilRepository = perfilRepository;
+    }
 
     @GetMapping("/perfis")
     public String telaPerfis(Model model) {
@@ -43,12 +51,6 @@ public class UsuarioController {
         return "redirect:/usuario/perfis";
     }
 
-    public UsuarioController(UsuarioRepository repository, PasswordEncoder passwordEncoder, PerfilRepository perfilRepository) {
-        this.repository = repository;
-        this.passwordEncoder = passwordEncoder;
-        this.perfilRepository = perfilRepository;
-    }
-
     @GetMapping("/lista")
     public String listar(Model model) {
         model.addAttribute("usuarios", repository.findAll());
@@ -66,7 +68,8 @@ public class UsuarioController {
     }
 
     @PostMapping("/cadastro")
-    public String cadastro(@RequestParam String login, @RequestParam String senha, Model model){
+    public String cadastro(@RequestParam String login,
+                           @RequestParam String senha, Model model) {
 
         if (repository.existsByLogin(login)) {
             model.addAttribute("erro", "Usuário já existe.");
@@ -77,8 +80,8 @@ public class UsuarioController {
         u.setLogin(login);
         u.setPassword(passwordEncoder.encode(senha));
         u.setAtivo(true);
-        repository.save(u);
-        return"redirect:/login";
 
+        repository.save(u); // pessoa fica null
+        return "redirect:/login";
     }
 }
