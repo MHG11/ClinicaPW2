@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{fragments/layout :: layout(~{::title}, ~{::main})}">
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::main})}" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <title>Consultas</title>
 </head>
@@ -30,7 +30,7 @@
                 <td th:text="${c.observacao}"></td>
                 <td th:text="${c.paciente.nome}"></td>
                 <td th:text="${c.medico.nome}"></td>
-                <td th:replace="~{fragments/components :: row-actions(@{/consultas/edit/{id}(id=${c.id})}, @{/consultas/remove/{id}(id=${c.id})})}"></td>
+                <td th:replace="~{fragments/components :: row-actions(@{/consultas/edit/{id}(id=${c.id})}, @{/consultas/remove/{id}(id=${c.id})})}" sec:authorize="hasAnyRole('ADMIN','SECRETARIA')"></td>
             </tr>
             </tbody>
         </table>

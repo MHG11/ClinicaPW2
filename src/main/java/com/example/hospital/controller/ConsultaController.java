@@ -56,12 +56,18 @@ public class ConsultaController {
         Pessoa pessoa = usuario.getPessoa();
         List<Consulta> consultas;
 
-        if (pessoa instanceof Medico){
+        boolean administrativo = usuarioLogado.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN")
+                        || a.getAuthority().equals("ROLE_SECRETARIA"));
+
+        if (pessoa instanceof Medico) {
             consultas = repository.findByMedicoId(pessoa.getId());
-        } else if (pessoa instanceof Paciente){
+        } else if (pessoa instanceof Paciente) {
             consultas = repository.findByPacienteId(pessoa.getId());
-        } else {
+        } else if (administrativo) {
             consultas = repository.findAll();
+        } else {
+            consultas = List.of();
         }
 
         model.addAttribute("consulta", consultas);
