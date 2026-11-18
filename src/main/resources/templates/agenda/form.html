@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::main})}">
+<head>
+    <title>Disponibilizar horário</title>
+</head>
+<body>
+<main class="container my-4">
+    <h2 class="mb-4">Disponibilizar horário</h2>
+
+    <div th:if="${erro}" class="alert alert-danger" role="alert" th:text="${erro}"></div>
+    <div th:if="${#lists.isEmpty(medicos)}" class="alert alert-warning" role="alert">
+        Cadastre um médico antes de disponibilizar horários.
+    </div>
+
+    <form th:unless="${#lists.isEmpty(medicos)}" th:action="@{/agenda/save}" method="post" class="col-lg-7">
+        <div class="mb-3">
+            <label for="medicoId" class="form-label">Médico</label>
+            <select id="medicoId" name="medicoId" class="form-select" required>
+                <option value="">-- Selecione o médico --</option>
+                <option th:each="medico : ${medicos}" th:value="${medico.id}"
+                        th:text="${medico.nome + ' - CRM ' + medico.crm}"></option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="data" class="form-label">Data</label>
+            <input id="data" name="data" type="date" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="horario" class="form-label">Horário</label>
+            <input id="horario" name="horario" type="time" class="form-control" required>
+        </div>
+        <div th:replace="~{fragments/components :: form-actions(@{/agenda/list})}"></div>
+    </form>
+</main>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::main})}">
+<head>
+    <title>Horários disponíveis</title>
+</head>
+<body>
+<main class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0">Horários disponíveis</h2>
+        <a class="btn btn-outline-success" th:href="@{/agenda/form}">Disponibilizar horário</a>
+    </div>
+
+    <div th:if="${mensagem}" class="alert alert-success" role="alert" th:text="${mensagem}"></div>
+    <div th:if="${erro}" class="alert alert-danger" role="alert" th:text="${erro}"></div>
+    <div th:if="${#lists.isEmpty(horarios)}" class="alert alert-info">Não há horários disponíveis no momento.</div>
+
+    <div class="table-responsive" th:unless="${#lists.isEmpty(horarios)}">
+        <table class="table table-striped table-hover align-middle">
+            <thead class="table-light">
+            <tr>
+                <th>Médico</th>
+                <th>Data</th>
+                <th>Horário</th>
+                <th class="text-end">Ação</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="horario : ${horarios}">
+                <td th:text="${horario.medico.nome}"></td>
+                <td th:text="${#temporals.format(horario.data, 'dd/MM/yyyy')}"></td>
+                <td th:text="${#temporals.format(horario.horario, 'HH:mm')}"></td>
+                <td class="text-end">
+                    <a class="btn btn-sm btn-success"
+                       th:href="@{/agendamentos/form/{id}(id=${horario.id})}">Agendar</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>

@@ -27,7 +27,7 @@ public class SecurityConfiguration {
                 )
                 .formLogin(form -> form
                         .loginPage("/login") // URL da página de login que criaremos
-                        .defaultSuccessUrl("/consultas/list", true)
+                        .defaultSuccessUrl("/agenda/disponiveis", true)
                         .permitAll() // a página de login é acessível sem autenticação
                 )
                 .httpBasic(withDefaults()) // autenticação básica (usuário e senha no cabeçalho HTTP)

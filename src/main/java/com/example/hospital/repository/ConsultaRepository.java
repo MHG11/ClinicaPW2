@@ -1,15 +1,9 @@
 package com.example.hospital.repository;
 
 import com.example.hospital.model.Consulta;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
-@Repository
 public interface ConsultaRepository extends JpaRepository<Consulta, Long> {
 
+    boolean existsByAgendamentoId(Long agendamentoId);
 }

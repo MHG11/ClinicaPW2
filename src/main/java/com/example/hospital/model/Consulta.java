@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import jakarta.persistence.*;
 
-import javax.xml.crypto.Data;
 import java.time.LocalDateTime;
 
 @Entity
@@ -24,6 +23,9 @@ public class Consulta implements Serializable{
     @ManyToOne
     @JoinColumn(name = "id_medico")
     private Medico medico;
+    @OneToOne
+    @JoinColumn(name = "agendamento_id", unique = true)
+    private Agendamento agendamento;
 
     public Long getId() {
         return id;
@@ -71,5 +73,13 @@ public class Consulta implements Serializable{
 
     public void setMedico(Medico medico) {
         this.medico = medico;
+    }
+
+    public Agendamento getAgendamento() {
+        return agendamento;
+    }
+
+    public void setAgendamento(Agendamento agendamento) {
+        this.agendamento = agendamento;
     }
 }

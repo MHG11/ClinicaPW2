@@ -2,7 +2,7 @@
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-success rounded-bottom px-3">
         <div class="container-fluid">
-            <a class="navbar-brand fw-semibold" th:href="@{/consultas/list}">Gestão de Consultas</a>
+            <a class="navbar-brand fw-semibold" th:href="@{/agenda/disponiveis}">Clínica</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Alternar navegação">
                 <span class="navbar-toggler-icon"></span>
@@ -15,10 +15,13 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Consultas</a>
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Agenda</a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" th:href="@{/consultas/list}">Listar consultas</a></li>
-                            <li><a class="dropdown-item" th:href="@{/consultas/form}">Nova consulta</a></li>
+                            <li><a class="dropdown-item" th:href="@{/agenda/disponiveis}">Horários disponíveis</a></li>
+                            <li><a class="dropdown-item" th:href="@{/agenda/list}">Todos os horários</a></li>
+                            <li><a class="dropdown-item" th:href="@{/agenda/form}">Disponibilizar horário</a></li>
+                            <li><a class="dropdown-item" th:href="@{/agendamentos/list}">Agendamentos</a></li>
+                            <li><a class="dropdown-item" th:href="@{/consultas/list}">Consultas realizadas</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">

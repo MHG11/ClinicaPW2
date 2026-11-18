@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::main})}">
+<head>
+    <title>Agendar horário</title>
+</head>
+<body>
+<main class="container my-4">
+    <h2 class="mb-4">Agendar horário</h2>
+
+    <div class="card col-lg-7 mb-4">
+        <div class="card-body">
+            <h5 class="card-title" th:text="${agenda.medico.nome}">Médico</h5>
+            <p class="card-text mb-0">
+                <span th:text="${#temporals.format(agenda.data, 'dd/MM/yyyy')}"></span>
+                às <span th:text="${#temporals.format(agenda.horario, 'HH:mm')}"></span>
+            </p>
+        </div>
+    </div>
+
+    <div th:if="${#lists.isEmpty(pacientes)}" class="alert alert-warning" role="alert">
+        Cadastre um paciente antes de realizar o agendamento.
+    </div>
+    <form th:unless="${#lists.isEmpty(pacientes)}" th:action="@{/agendamentos/save}" method="post" class="col-lg-7">
+        <input type="hidden" name="agendaId" th:value="${agenda.id}">
+        <div class="mb-3">
+            <label for="pacienteId" class="form-label">Paciente</label>
+            <select id="pacienteId" name="pacienteId" class="form-select" required>
+                <option value="">-- Selecione o paciente --</option>
+                <option th:each="paciente : ${pacientes}" th:value="${paciente.id}"
+                        th:text="${paciente.nome}"></option>
+            </select>
+        </div>
+        <div th:replace="~{fragments/components :: form-actions(@{/agenda/disponiveis})}"></div>
+    </form>
+</main>
+</body>
+</html>
