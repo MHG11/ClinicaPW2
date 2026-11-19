@@ -12,6 +12,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -78,9 +79,19 @@ public class PacienteController {
     }
 
     @GetMapping("/edit/{id}")
-    public ModelAndView edit(@PathVariable("id") Long id, ModelMap model){
-        model.addAttribute("paciente", repository.findById(id));
-        return new ModelAndView("pacientes/form",model);
+    public ModelAndView edit(@PathVariable("id") Long id,
+                             ModelMap model,
+                             RedirectAttributes attributes) {
+        Paciente paciente = repository.findById(id).orElse(null);
+
+        if (paciente == null) {
+            attributes.addFlashAttribute("erro", "Paciente não encontrado.");
+            return new ModelAndView("redirect:/pacientes/list");
+        }
+
+        model.addAttribute("paciente", paciente);
+        model.addAttribute("usuarios", usuariosSemPessoa());
+        return new ModelAndView("pacientes/form", model);
     }
 
     @GetMapping("/remove/{id}")

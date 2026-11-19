@@ -26,5 +26,5 @@ insert into usuario(usuario_id, ativo, login, password, pessoa_id) values (4, tr
 
 insert into usuario_perfil(perfil_id, usuario_id) values (1, 1);
 insert into usuario_perfil(perfil_id, usuario_id) values (2, 2);
-insert into usuario_perfil(perfil_id, usuario_id) values (2, 3);
-insert into usuario_perfil(perfil_id, usuario_id) values (2, 5);
+insert into usuario_perfil(perfil_id, usuario_id) values (3, 3);
+insert into usuario_perfil(perfil_id, usuario_id) values (4, 5);

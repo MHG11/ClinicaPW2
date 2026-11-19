@@ -15,6 +15,16 @@
         <input type="hidden" th:field="*{id}">
 
         <div class="mb-3">
+            <label for="usuarioId" class="form-label">Usuário</label>
+            <select id="usuarioId" name="usuarioId" class="form-select">
+                <option value="">Sem usuário (só cadastro)</option>
+                <option th:each="u : ${usuarios}"
+                        th:value="${u.id}"
+                        th:text="${u.login}">login</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
             <label for="nome" class="form-label">Nome</label>
             <input type="text" id="nome" class="form-control" th:field="*{nome}"
                    th:errorclass="is-invalid" placeholder="Nome">
