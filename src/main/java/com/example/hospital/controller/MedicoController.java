@@ -83,19 +83,20 @@ public class MedicoController {
     }
 
     @GetMapping("/edit/{id}")
-    public ModelAndView edit(@PathVariable("id") Long id, ModelMap model, RedirectAttributes attributes) {
-        Medico medico = repository.findById(id).orElse(null);
-        if (medico == null) {
-            attributes.addFlashAttribute("erro", "Médico não encontrado.");
-            return new ModelAndView("redirect:/medicos/list");
-        }
-        model.addAttribute("medicos", medico);
-    public ModelAndView edit(@PathVariable("id") Long id, ModelMap model) {
-        model.addAttribute("medicos", repository.findById(id));
-        model.addAttribute("usuarios", usuariosSemPessoa());
-        return new ModelAndView("medicos/form", model);
+    public ModelAndView edit(@PathVariable("id") Long id,
+                         ModelMap model,
+                         RedirectAttributes attributes) {
+    Medico medico = repository.findById(id).orElse(null);
+
+    if (medico == null) {
+        attributes.addFlashAttribute("erro", "Médico não encontrado.");
+        return new ModelAndView("redirect:/medicos/list");
     }
 
+    model.addAttribute("medicos", medico);
+    model.addAttribute("usuarios", usuariosSemPessoa());
+    return new ModelAndView("medicos/form", model);
+}
     @GetMapping("/remove/{id}")
     public ModelAndView deletar(@PathVariable("id") Long id) {
         repository.deleteById(id);
