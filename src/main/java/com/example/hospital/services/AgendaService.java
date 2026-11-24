@@ -10,10 +10,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class AgendaService {
+
+    private static final int MAX_HORARIOS_POR_OPERACAO = 10_000;
+    private static final Set<Integer> DURACOES_PERMITIDAS = Set.of(15, 20, 30, 45, 60);
 
     private final AgendaRepository agendaRepository;
     private final AgendamentoRepository agendamentoRepository;
@@ -34,20 +44,82 @@ public class AgendaService {
     }
 
     @Transactional
-    public void cadastrarHorario(Long medicoId, LocalDateTime dataHora) {
-        if (dataHora == null) {
-            throw new IllegalArgumentException("Informe a data e o horário.");
+    public ResultadoDisponibilidade cadastrarHorarios(Long medicoId,
+                                                        LocalDate dataInicio,
+                                                        LocalDate dataFim,
+                                                        Set<DayOfWeek> diasSemana,
+                                                        LocalTime horaInicio,
+                                                        LocalTime horaFim,
+                                                        int duracaoMinutos) {
+        if (dataInicio == null || dataFim == null || dataInicio.isAfter(dataFim)) {
+            throw new IllegalArgumentException("Informe um período de datas válido.");
         }
-        if (agendaRepository.existsByMedicoIdAndDataHora(medicoId, dataHora)) {
-            throw new IllegalStateException("Este médico já possui um horário cadastrado nessa data e hora.");
+        if (dataInicio.isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("A data inicial não pode estar no passado.");
+        }
+        if (dataFim.isAfter(dataInicio.plusYears(1))) {
+            throw new IllegalArgumentException("O período não pode ultrapassar um ano.");
+        }
+        if (diasSemana == null || diasSemana.isEmpty()) {
+            throw new IllegalArgumentException("Selecione pelo menos um dia da semana.");
+        }
+        if (horaInicio == null || horaFim == null || !horaInicio.isBefore(horaFim)) {
+            throw new IllegalArgumentException("O horário final deve ser posterior ao horário inicial.");
+        }
+        if (!DURACOES_PERMITIDAS.contains(duracaoMinutos)) {
+            throw new IllegalArgumentException("Selecione uma duração disponível para a consulta.");
+        }
+        if (horaInicio.getSecond() != 0 || horaInicio.getNano() != 0
+                || horaFim.getSecond() != 0 || horaFim.getNano() != 0) {
+            throw new IllegalArgumentException("Informe horários com precisão de minutos.");
+        }
+        if (horaInicio.plusMinutes(duracaoMinutos).isAfter(horaFim)) {
+            throw new IllegalArgumentException("A faixa de atendimento é menor que a duração da consulta.");
         }
 
-        Agenda agenda = new Agenda();
-        agenda.setMedico(medicoRepository.findById(medicoId)
-                .orElseThrow(() -> new IllegalArgumentException("Médico não encontrado.")));
-        agenda.setDataHora(dataHora);
-        agenda.setStatus(StatusAgenda.DISPONIVEL);
-        agendaRepository.save(agenda);
+        Medico medico = medicoRepository.findById(medicoId)
+                .orElseThrow(() -> new IllegalArgumentException("Médico não encontrado."));
+        LocalDateTime agora = LocalDateTime.now();
+        LocalDateTime inicioPeriodo = dataInicio.atStartOfDay();
+        LocalDateTime fimPeriodo = dataFim.plusDays(1).atStartOfDay().minusNanos(1);
+        Set<LocalDateTime> horariosExistentes = new HashSet<>();
+        agendaRepository.findByMedicoIdAndDataHoraBetween(medicoId, inicioPeriodo, fimPeriodo)
+                .forEach(agenda -> horariosExistentes.add(agenda.getDataHora()));
+
+        List<Agenda> novosHorarios = new ArrayList<>();
+        int ignorados = 0;
+        for (LocalDate data = dataInicio; !data.isAfter(dataFim); data = data.plusDays(1)) {
+            if (!diasSemana.contains(data.getDayOfWeek())) {
+                continue;
+            }
+
+            LocalTime horario = horaInicio;
+            while (!horario.plusMinutes(duracaoMinutos).isAfter(horaFim)) {
+                LocalDateTime dataHora = LocalDateTime.of(data, horario);
+                if (dataHora.isBefore(agora)) {
+                    horario = horario.plusMinutes(duracaoMinutos);
+                    continue;
+                }
+                if (!horariosExistentes.add(dataHora)) {
+                    ignorados++;
+                    horario = horario.plusMinutes(duracaoMinutos);
+                    continue;
+                }
+
+                Agenda agenda = new Agenda();
+                agenda.setMedico(medico);
+                agenda.setDataHora(dataHora);
+                agenda.setStatus(StatusAgenda.DISPONIVEL);
+                novosHorarios.add(agenda);
+                if (novosHorarios.size() > MAX_HORARIOS_POR_OPERACAO) {
+                    throw new IllegalArgumentException("A geração não pode criar mais de 10.000 horários por operação.");
+                }
+                horario = horario.plusMinutes(duracaoMinutos);
+            }
+        }
+
+        agendaRepository.saveAll(novosHorarios);
+        return new ResultadoDisponibilidade(novosHorarios.size(), ignorados);
     }
 
     @Transactional
@@ -117,5 +189,8 @@ public class AgendaService {
                 .orElseThrow(() -> new IllegalArgumentException("Horário da agenda não encontrado."));
         agendamento.setStatus(StatusAgendamento.CANCELADO);
         agenda.setStatus(StatusAgenda.DISPONIVEL);
+    }
+
+    public record ResultadoDisponibilidade(int criados, int ignorados) {
     }
 }

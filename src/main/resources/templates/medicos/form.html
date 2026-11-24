@@ -30,6 +30,12 @@
         </div>
 
         <div class="mb-3">
+            <label for="especialidade" class="form-label">Especialidade</label>
+            <input type="text" id="especialidade" class="form-control" th:field="*{especialidade}"
+                   placeholder="Especialidade">
+        </div>
+
+        <div class="mb-3">
             <label for="nome" class="form-label">Nome</label>
             <input type="text" id="nome" class="form-control" th:field="*{nome}" th:errorclass="is-invalid" placeholder="Nome">
         </div>

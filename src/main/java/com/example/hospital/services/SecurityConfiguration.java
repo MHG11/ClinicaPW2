@@ -32,7 +32,8 @@ public class SecurityConfiguration {
                         .requestMatchers("/consultas/list").hasAnyRole("ADMIN", "SECRETARIA", "PACIENTE","MEDICO")
                         .requestMatchers(HttpMethod.POST, "/usuario/cadastro").permitAll()
                         .requestMatchers("/usuario/dados").hasRole("ADMIN")
-                        .requestMatchers("/usuario/perfis", "/usuario/*/perfil").hasRole("ADMIN")
+                        .requestMatchers("/usuario/perfis", "/usuario/*/perfil", "/usuario/medicos-pendentes",
+                                "/usuario/medicos-pendentes/**").hasRole("ADMIN")
                         .anyRequest().authenticated() // demais requisições exigem usuário autenticado
                 )
                 .formLogin(form -> form

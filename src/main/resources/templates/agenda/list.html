@@ -7,14 +7,13 @@
 </head>
 <body>
 <main class="container my-4">
+    <div th:if="${mensagem}" class="alert alert-success" th:text="${mensagem}"></div>
+    <div th:if="${erro}" class="alert alert-danger" th:text="${erro}"></div>
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
         <h2 class="mb-0">Horários disponíveis</h2>
         <a sec:authorize="hasAnyRole('ADMIN','SECRETARIA','MEDICO')"
            th:href="@{/agenda/form}" class="btn btn-success">Disponibilizar horário</a>
     </div>
-    <div th:if="${mensagem}" class="alert alert-success" th:text="${mensagem}"></div>
-    <div th:if="${erro}" class="alert alert-danger" th:text="${erro}"></div>
-
     <div th:if="${#lists.isEmpty(horarios)}" class="alert alert-info">
         No momento não há horários disponíveis.
     </div>

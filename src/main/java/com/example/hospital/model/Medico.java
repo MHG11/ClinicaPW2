@@ -14,6 +14,8 @@ public class Medico extends PessoaFisica implements Serializable {
     @NotBlank(message = "Adicione um CRM.")
     private String crm;
 
+    private String especialidade;
+
     @OneToMany(mappedBy = "medico")
     private List<Consulta> consultas;
 
@@ -23,6 +25,14 @@ public class Medico extends PessoaFisica implements Serializable {
 
     public void setCrm(String crm) {
         this.crm = crm;
+    }
+
+    public String getEspecialidade() {
+        return especialidade;
+    }
+
+    public void setEspecialidade(String especialidade) {
+        this.especialidade = especialidade;
     }
 
     public List<Consulta> getConsultas() {

@@ -14,6 +14,7 @@
 
             <div th:if="${param.error}" class="alert alert-danger">Usuário ou senha inválidos.</div>
             <div th:if="${param.logout}" class="alert alert-success">Você saiu do sistema.</div>
+            <div th:if="${mensagem}" class="alert alert-info" th:text="${mensagem}"></div>
 
             <div class="card shadow-sm">
                 <h1 class="card-header h5">Informe usuário e senha</h1>

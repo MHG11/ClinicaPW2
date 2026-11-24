@@ -17,6 +17,7 @@
                 <th>ID</th>
                 <th>Login</th>
                 <th>Perfis</th>
+                <th>Cadastro médico</th>
                 <th>Status</th>
             </tr>
             </thead>
@@ -28,13 +29,14 @@
                     <span th:each="p : ${u.perfis}" th:text="${p.nome}"
                           class="badge bg-secondary me-1"></span>
                 </td>
+                <td th:text="${u.statusCadastroMedico == null ? '—' : u.statusCadastroMedico}"></td>
                 <td>
                     <span th:if="${u.ativo}" class="badge bg-success">Ativo</span>
                     <span th:unless="${u.ativo}" class="badge bg-danger">Inativo</span>
                 </td>
             </tr>
             <tr th:if="${#lists.isEmpty(usuarios)}">
-                <td colspan="4" class="text-center text-muted">Nenhum usuário cadastrado.</td>
+                <td colspan="5" class="text-center text-muted">Nenhum usuário cadastrado.</td>
             </tr>
             </tbody>
         </table>

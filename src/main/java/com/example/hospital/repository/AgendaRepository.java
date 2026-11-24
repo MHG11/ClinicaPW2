@@ -16,7 +16,11 @@ public interface AgendaRepository extends JpaRepository<Agenda, Long> {
 
     boolean existsByMedicoIdAndDataHora(Long medicoId, LocalDateTime dataHora);
 
+    List<Agenda> findByMedicoIdAndDataHoraBetween(Long medicoId, LocalDateTime inicio, LocalDateTime fim);
+
     List<Agenda> findByStatusOrderByDataHoraAsc(StatusAgenda status);
+
+    List<Agenda> findByMedicoIdAndStatusOrderByDataHoraAsc(Long medicoId, StatusAgenda status);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select a from Agenda a where a.id = :id")

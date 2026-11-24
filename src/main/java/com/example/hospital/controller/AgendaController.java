@@ -1,5 +1,6 @@
 package com.example.hospital.controller;
 
+import com.example.hospital.model.Agenda;
 import com.example.hospital.model.Medico;
 import com.example.hospital.model.StatusAgenda;
 import com.example.hospital.model.Usuario;
@@ -21,8 +22,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.time.LocalDateTime;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/agenda")
@@ -48,11 +52,19 @@ public class AgendaController {
 
     @GetMapping("/list")
     public ModelAndView listar(@AuthenticationPrincipal UserDetails usuarioLogado, ModelMap model) {
-        model.addAttribute("horarios", agendaRepository.findByStatusOrderByDataHoraAsc(StatusAgenda.DISPONIVEL));
-        boolean administrativo = usuarioLogado.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN")
-                        || a.getAuthority().equals("ROLE_SECRETARIA"));
-        model.addAttribute("pacientes", administrativo ? pacienteRepository.findAll() : List.of());
+        Usuario usuario = usuarioRepository.findByLogin(usuarioLogado.getUsername()).orElseThrow();
+        List<Agenda> horarios;
+        if (usuario.getPessoa() instanceof Medico medico
+                && temPerfil(usuarioLogado, "MEDICO")
+                && !temPerfil(usuarioLogado, "ADMIN", "SECRETARIA")) {
+            horarios = agendaRepository.findByMedicoIdAndStatusOrderByDataHoraAsc(
+                    medico.getId(), StatusAgenda.DISPONIVEL);
+        } else {
+            horarios = agendaRepository.findByStatusOrderByDataHoraAsc(StatusAgenda.DISPONIVEL);
+        }
+        model.addAttribute("horarios", horarios);
+        boolean podeSelecionarPaciente = temPerfil(usuarioLogado, "ADMIN", "SECRETARIA");
+        model.addAttribute("pacientes", podeSelecionarPaciente ? pacienteRepository.findAll() : List.of());
         return new ModelAndView("agenda/list", model);
     }
 
@@ -69,12 +81,26 @@ public class AgendaController {
                 model.addAttribute("erro", "Seu usuário não está vinculado a um cadastro de médico.");
             }
         }
+        model.addAttribute("diasSemana", List.of(
+                new DiaSemanaOpcao("MONDAY", "Segunda-feira"),
+                new DiaSemanaOpcao("TUESDAY", "Terça-feira"),
+                new DiaSemanaOpcao("WEDNESDAY", "Quarta-feira"),
+                new DiaSemanaOpcao("THURSDAY", "Quinta-feira"),
+                new DiaSemanaOpcao("FRIDAY", "Sexta-feira"),
+                new DiaSemanaOpcao("SATURDAY", "Sábado"),
+                new DiaSemanaOpcao("SUNDAY", "Domingo")));
+        model.addAttribute("dataMinima", LocalDate.now());
         return new ModelAndView("agenda/form", model);
     }
 
     @PostMapping("/cadastrar")
     public ModelAndView cadastrar(@RequestParam(required = false) Long medicoId,
-                                  @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dataHora,
+                                  @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInicio,
+                                  @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataFim,
+                                  @RequestParam(required = false) Set<DayOfWeek> diasSemana,
+                                  @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime horaInicio,
+                                  @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime horaFim,
+                                  @RequestParam int duracaoMinutos,
                                   @AuthenticationPrincipal UserDetails usuarioLogado,
                                   RedirectAttributes attributes) {
         try {
@@ -87,13 +113,17 @@ public class AgendaController {
             } else if (medicoId == null) {
                 throw new IllegalArgumentException("Selecione um médico.");
             }
-            agendaService.cadastrarHorario(medicoId, dataHora);
-            attributes.addFlashAttribute("mensagem", "Horário disponibilizado com sucesso.");
+            AgendaService.ResultadoDisponibilidade resultado = agendaService.cadastrarHorarios(
+                    medicoId, dataInicio, dataFim, diasSemana, horaInicio, horaFim, duracaoMinutos);
+            attributes.addFlashAttribute("mensagem",
+                    resultado.criados() + " horário(s) disponibilizado(s); "
+                            + resultado.ignorados() + " duplicado(s) ignorado(s).");
         } catch (IllegalArgumentException | IllegalStateException e) {
             attributes.addFlashAttribute("erro", e.getMessage());
             return new ModelAndView("redirect:/agenda/form");
         } catch (DataIntegrityViolationException e) {
-            attributes.addFlashAttribute("erro", "Este médico já possui um horário cadastrado nessa data e hora.");
+            attributes.addFlashAttribute("erro",
+                    "Não foi possível concluir a geração por conflito com outro cadastro simultâneo. Tente novamente.");
             return new ModelAndView("redirect:/agenda/form");
         }
         return new ModelAndView("redirect:/agenda/list");
@@ -102,5 +132,8 @@ public class AgendaController {
     private boolean temPerfil(UserDetails usuario, String... perfis) {
         return usuario.getAuthorities().stream()
                 .anyMatch(a -> List.of(perfis).contains(a.getAuthority().replace("ROLE_", "")));
+    }
+
+    public record DiaSemanaOpcao(String codigo, String nome) {
     }
 }

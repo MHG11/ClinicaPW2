@@ -1,14 +1,13 @@
 package com.example.hospital.controller;
 
-import com.example.hospital.model.Paciente;
 import com.example.hospital.model.Perfil;
-import com.example.hospital.model.PessoaFisica;
+import com.example.hospital.model.StatusCadastroMedico;
 import com.example.hospital.model.Usuario;
 import com.example.hospital.repository.PerfilRepository;
 import com.example.hospital.repository.UsuarioRepository;
+import com.example.hospital.services.CadastroUsuarioService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,14 +18,15 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class UsuarioController {
 
     private final UsuarioRepository repository;
-    private final PasswordEncoder passwordEncoder;
-
     private final PerfilRepository perfilRepository;
+    private final CadastroUsuarioService cadastroUsuarioService;
 
-    public UsuarioController(UsuarioRepository repository, PasswordEncoder passwordEncoder, PerfilRepository perfilRepository) {
+    public UsuarioController(UsuarioRepository repository,
+                             PerfilRepository perfilRepository,
+                             CadastroUsuarioService cadastroUsuarioService) {
         this.repository = repository;
-        this.passwordEncoder = passwordEncoder;
         this.perfilRepository = perfilRepository;
+        this.cadastroUsuarioService = cadastroUsuarioService;
     }
 
     @GetMapping("/perfis")
@@ -68,19 +68,73 @@ public class UsuarioController {
 
     @PostMapping("/cadastro")
     public String cadastro(@RequestParam String login,
-                           @RequestParam String senha, Model model) {
-
-        if (repository.existsByLogin(login)) {
-            model.addAttribute("erro", "Usuário já existe.");
+                           @RequestParam String senha,
+                           @RequestParam String tipoCadastro,
+                           @RequestParam String nome,
+                           @RequestParam String cpf,
+                           @RequestParam(required = false) String telefone,
+                           @RequestParam(required = false) String crm,
+                           @RequestParam(required = false) String especialidade,
+                           Model model,
+                           RedirectAttributes redirect) {
+        model.addAttribute("login", login);
+        model.addAttribute("nome", nome);
+        model.addAttribute("cpf", cpf);
+        model.addAttribute("telefone", telefone);
+        model.addAttribute("crm", crm);
+        model.addAttribute("especialidade", especialidade);
+        model.addAttribute("tipoCadastro", tipoCadastro);
+        if (nome.isBlank() || cpf.isBlank()
+                || ("PACIENTE".equals(tipoCadastro) && (telefone == null || telefone.isBlank()))
+                || ("MEDICO".equals(tipoCadastro)
+                && (crm == null || crm.isBlank() || especialidade == null || especialidade.isBlank()))
+                || (!"PACIENTE".equals(tipoCadastro) && !"MEDICO".equals(tipoCadastro))) {
+            model.addAttribute("erro", "Preencha os campos obrigatórios do tipo de cadastro selecionado.");
             return "login/cadastro";
         }
 
-        Usuario u = new Usuario();
-        u.setLogin(login);
-        u.setPassword(passwordEncoder.encode(senha));
-        u.setAtivo(true);
+        try {
+            if ("PACIENTE".equals(tipoCadastro)) {
+                cadastroUsuarioService.cadastrarPaciente(login, senha, nome, cpf, telefone);
+                redirect.addFlashAttribute("mensagem", "Cadastro concluído. Você já pode entrar.");
+            } else {
+                cadastroUsuarioService.solicitarCadastroMedico(login, senha, nome, cpf, crm, especialidade);
+                redirect.addFlashAttribute("mensagem",
+                        "Solicitação enviada. Seu acesso será liberado após aprovação da administração.");
+            }
+            return "redirect:/login";
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            model.addAttribute("erro", e.getMessage());
+            return "login/cadastro";
+        }
+    }
 
-        repository.save(u); // pessoa fica null
-        return "redirect:/login";
+    @GetMapping("/medicos-pendentes")
+    public String medicosPendentes(Model model) {
+        model.addAttribute("solicitacoes",
+                repository.findByStatusCadastroMedicoOrderByIdAsc(StatusCadastroMedico.PENDENTE));
+        return "usuario/medicos-pendentes";
+    }
+
+    @PostMapping("/medicos-pendentes/{id}/aprovar")
+    public String aprovarMedico(@PathVariable Long id, RedirectAttributes redirect) {
+        try {
+            cadastroUsuarioService.aprovarMedico(id);
+            redirect.addFlashAttribute("msg", "Cadastro do médico aprovado; o acesso está liberado.");
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            redirect.addFlashAttribute("erro", e.getMessage());
+        }
+        return "redirect:/usuario/medicos-pendentes";
+    }
+
+    @PostMapping("/medicos-pendentes/{id}/rejeitar")
+    public String rejeitarMedico(@PathVariable Long id, RedirectAttributes redirect) {
+        try {
+            cadastroUsuarioService.rejeitarMedico(id);
+            redirect.addFlashAttribute("msg", "Solicitação rejeitada. O acesso permanece bloqueado.");
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            redirect.addFlashAttribute("erro", e.getMessage());
+        }
+        return "redirect:/usuario/medicos-pendentes";
     }
 }
