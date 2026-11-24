@@ -90,8 +90,6 @@ public class MedicoController {
             return new ModelAndView("redirect:/medicos/list");
         }
         model.addAttribute("medicos", medico);
-    public ModelAndView edit(@PathVariable("id") Long id, ModelMap model) {
-        model.addAttribute("medicos", repository.findById(id));
         model.addAttribute("usuarios", usuariosSemPessoa());
         return new ModelAndView("medicos/form", model);
     }
