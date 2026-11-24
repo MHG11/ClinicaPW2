@@ -94,10 +94,6 @@ public class MedicoController {
         return new ModelAndView("medicos/form", model);
     }
 
-    model.addAttribute("medicos", medico);
-    model.addAttribute("usuarios", usuariosSemPessoa());
-    return new ModelAndView("medicos/form", model);
-}
     @GetMapping("/remove/{id}")
     public ModelAndView deletar(@PathVariable("id") Long id) {
         repository.deleteById(id);
