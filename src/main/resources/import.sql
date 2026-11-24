@@ -28,3 +28,10 @@ insert into usuario_perfil(perfil_id, usuario_id) values (1, 1);
 insert into usuario_perfil(perfil_id, usuario_id) values (2, 2);
 insert into usuario_perfil(perfil_id, usuario_id) values (2, 3);
 insert into usuario_perfil(perfil_id, usuario_id) values (2, 5);
+insert into usuario(usuario_id, ativo, login, password, pessoa_id) values (3, true, "vanessa", "$2a$04$A/C1FZVlB2U.CYkIAodiT.uc/sgOiKhuzQ0MBwMWfVqujrq4BLJ2i", 4);
+insert into usuario(usuario_id, ativo, login, password, pessoa_id) values (4, true, "julio", "$2a$04$A/C1FZVlB2U.CYkIAodiT.uc/sgOiKhuzQ0MBwMWfVqujrq4BLJ2i", 3);
+
+insert into usuario_perfil(perfil_id, usuario_id) values (1, 1);
+insert into usuario_perfil(perfil_id, usuario_id) values (2, 2);
+insert into usuario_perfil(perfil_id, usuario_id) values (2, 3);
+insert into usuario_perfil(perfil_id, usuario_id) values (2, 5);

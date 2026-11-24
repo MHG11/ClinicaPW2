@@ -79,8 +79,13 @@ public class PacienteController {
 
     @GetMapping("/edit/{id}")
     public ModelAndView edit(@PathVariable("id") Long id, ModelMap model){
-        model.addAttribute("paciente", repository.findById(id));
-        return new ModelAndView("pacientes/form",model);
+        Paciente paciente = repository.findById(id).orElse(null);
+        if (paciente == null) {
+            return new ModelAndView("redirect:/pacientes/list");
+        }
+        model.addAttribute("paciente", paciente);
+        model.addAttribute("usuarios", usuariosSemPessoa());
+        return new ModelAndView("pacientes/form", model);
     }
 
     @GetMapping("/remove/{id}")

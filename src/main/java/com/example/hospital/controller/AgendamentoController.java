@@ -2,7 +2,6 @@ package com.example.hospital.controller;
 
 import com.example.hospital.model.*;
 import com.example.hospital.repository.AgendamentoRepository;
-import com.example.hospital.repository.PacienteRepository;
 import com.example.hospital.repository.UsuarioRepository;
 import com.example.hospital.services.AgendaService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -27,16 +26,13 @@ public class AgendamentoController {
 
     private final AgendamentoRepository agendamentoRepository;
     private final UsuarioRepository usuarioRepository;
-    private final PacienteRepository pacienteRepository;
     private final AgendaService agendaService;
 
     public AgendamentoController(AgendamentoRepository agendamentoRepository,
                                  UsuarioRepository usuarioRepository,
-                                 PacienteRepository pacienteRepository,
                                  AgendaService agendaService) {
         this.agendamentoRepository = agendamentoRepository;
         this.usuarioRepository = usuarioRepository;
-        this.pacienteRepository = pacienteRepository;
         this.agendaService = agendaService;
     }
 
@@ -57,7 +53,6 @@ public class AgendamentoController {
 
         model.addAttribute("agendamentos", agendamentos);
         model.addAttribute("administrativo", administrativo);
-        model.addAttribute("pacientes", administrativo ? pacienteRepository.findAll() : List.of());
         return new ModelAndView("agendamentos/list", model);
     }
 

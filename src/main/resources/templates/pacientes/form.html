@@ -15,6 +15,15 @@
         <input type="hidden" th:field="*{id}">
 
         <div class="mb-3">
+            <label for="usuarioId" class="form-label">Vincular usuário existente (opcional)</label>
+            <select id="usuarioId" name="usuarioId" class="form-select">
+                <option value="">Sem usuário vinculado</option>
+                <option th:each="u : ${usuarios}" th:value="${u.id}" th:text="${u.login}"></option>
+            </select>
+            <div class="form-text">São listados apenas usuários que ainda não estão vinculados a uma pessoa.</div>
+        </div>
+
+        <div class="mb-3">
             <label for="nome" class="form-label">Nome</label>
             <input type="text" id="nome" class="form-control" th:field="*{nome}"
                    th:errorclass="is-invalid" placeholder="Nome">

@@ -18,6 +18,7 @@
                 <th>ID</th>
                 <th>CRM</th>
                 <th>Nome</th>
+                <th>Especialidade</th>
                 <th>Usuário</th>
                 <th class="text-end">Ações</th>
             </tr>
@@ -35,16 +36,7 @@
                 <td th:text="${m.id}"></td>
                 <td th:text="${m.crm}"></td>
                 <td th:text="${m.nome}"></td>
-                <td>
-                    <form th:if="${!#lists.isEmpty(usuarios)}"
-                          th:action="@{/medicos/vincular}" method="post" class="d-flex gap-1">
-                        <input type="hidden" name="medicoId" th:value="${m.id}">
-                        <select name="usuarioId" class="form-select form-select-sm w-auto">
-                            <option th:each="u : ${usuarios}" th:value="${u.id}" th:text="${u.login}"></option>
-                        </select>
-                        <button class="btn btn-sm btn-outline-primary">Vincular</button>
-                    </form>
-                </td>
+                <td th:text="${m.especialidade}"></td>
                 <td th:replace="~{fragments/components :: row-actions(@{/medicos/edit/{id}(id=${m.id})}, @{/medicos/remove/{id}(id=${m.id})})}"></td>
             </tr>
             </tbody>

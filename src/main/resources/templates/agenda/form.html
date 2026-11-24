@@ -10,7 +10,11 @@
     <div th:if="${mensagem}" class="alert alert-success" th:text="${mensagem}"></div>
     <div th:if="${erro}" class="alert alert-danger" th:text="${erro}"></div>
 
-    <form th:action="@{/agenda/cadastrar}" method="post" class="col-lg-6">
+    <p class="text-muted">
+        Escolha o período, os dias e a faixa de atendimento. Os blocos começam exatamente no horário inicial
+        informado e são repetidos conforme a duração da consulta.
+    </p>
+    <form th:action="@{/agenda/cadastrar}" method="post" class="col-lg-8">
         <div class="mb-3">
             <label for="medicoId" class="form-label">Médico</label>
             <select id="medicoId" name="medicoId" class="form-select" required>
@@ -19,11 +23,50 @@
                         th:text="${medico.nome + ' - CRM ' + medico.crm}"></option>
             </select>
         </div>
-        <div class="mb-3">
-            <label for="dataHora" class="form-label">Data e horário</label>
-            <input id="dataHora" name="dataHora" type="datetime-local" class="form-control" required>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label for="dataInicio" class="form-label">Data inicial</label>
+                <input id="dataInicio" name="dataInicio" type="date" class="form-control"
+                       th:min="${dataMinima}" required>
+            </div>
+            <div class="col-md-6">
+                <label for="dataFim" class="form-label">Data final</label>
+                <input id="dataFim" name="dataFim" type="date" class="form-control"
+                       th:min="${dataMinima}" required>
+            </div>
+            <fieldset class="col-12">
+                <legend class="col-form-label pt-0">Dias de atendimento</legend>
+                <div class="d-flex flex-wrap gap-3">
+                    <div class="form-check" th:each="dia : ${diasSemana}">
+                        <input class="form-check-input" type="checkbox" name="diasSemana"
+                               th:id="${'dia-' + dia.codigo}" th:value="${dia.codigo}">
+                        <label class="form-check-label" th:for="${'dia-' + dia.codigo}"
+                               th:text="${dia.nome}"></label>
+                    </div>
+                </div>
+            </fieldset>
+            <div class="col-md-4">
+                <label for="horaInicio" class="form-label">Início do atendimento</label>
+                <input id="horaInicio" name="horaInicio" type="time" class="form-control" required>
+            </div>
+            <div class="col-md-4">
+                <label for="horaFim" class="form-label">Fim do atendimento</label>
+                <input id="horaFim" name="horaFim" type="time" class="form-control" required>
+            </div>
+            <div class="col-md-4">
+                <label for="duracaoMinutos" class="form-label">Duração da consulta</label>
+                <select id="duracaoMinutos" name="duracaoMinutos" class="form-select" required>
+                    <option value="15">15 minutos</option>
+                    <option value="20">20 minutos</option>
+                    <option value="30" selected>30 minutos</option>
+                    <option value="45">45 minutos</option>
+                    <option value="60">60 minutos</option>
+                </select>
+            </div>
         </div>
-        <button type="submit" class="btn btn-success">Disponibilizar</button>
+        <div class="mt-4">
+            <button type="submit" class="btn btn-success">Gerar horários</button>
+        </div>
         <a th:href="@{/agenda/list}" class="btn btn-outline-secondary">Voltar</a>
     </form>
 </main>

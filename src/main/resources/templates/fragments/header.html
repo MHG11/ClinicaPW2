@@ -44,6 +44,9 @@
         </div>
 
         <a sec:authorize="hasRole('ADMIN')" th:href="@{/usuario/lista}">Listar usuarios</a>
+        <a sec:authorize="hasRole('ADMIN')" class="ms-2" th:href="@{/usuario/medicos-pendentes}">
+            Solicitações de médicos
+        </a>
 
         <a sec:authorize="!isAuthenticated()" th:href="@{/login}">Entrar</a>
 

@@ -21,6 +21,10 @@ public class Usuario {
 
     private boolean ativo = true;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status_cadastro_medico", length = 20)
+    private StatusCadastroMedico statusCadastroMedico;
+
     @ManyToMany
     @JoinTable(name = "usuario_perfil", // opcional: apenas explicita a tabela de associação
             joinColumns = @JoinColumn(name = "usuario_id"),
@@ -64,6 +68,11 @@ public class Usuario {
 
     public boolean isAtivo() { return ativo; }
     public void setAtivo(boolean ativo) { this.ativo = ativo; }
+
+    public StatusCadastroMedico getStatusCadastroMedico() { return statusCadastroMedico; }
+    public void setStatusCadastroMedico(StatusCadastroMedico statusCadastroMedico) {
+        this.statusCadastroMedico = statusCadastroMedico;
+    }
 
     public List<Perfil> getPerfis() { return perfis; }
 }
